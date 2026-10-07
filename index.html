@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products - [YOUR BUSINESS NAME]</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #f5f5f5; color: #222; }
+  header { background: #0a3d62; color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; }
+  header h1 { font-size: 20px; margin-bottom: 8px; }
+  nav a { color: white; text-decoration: none; margin: 0 6px; font-size: 13px; }
+  .section { padding: 20px 15px; max-width: 900px; margin: auto; }
+  .section h2 { color: #0a3d62; margin-bottom: 15px; }
+  .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  .product-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+  .product-card img { width: 100%; height: 140px; object-fit: cover; background: #ddd; }
+  .product-card .info { padding: 10px; }
+  .product-card h4 { font-size: 14px; margin-bottom: 5px; }
+  .product-card .price { color: #f39c12; font-weight: bold; margin-bottom: 8px; }
+  .add-btn { background: #0a3d62; color: white; border: none; padding: 8px 12px; border-radius: 5px; width: 100%; font-size: 13px; cursor: pointer; }
+  .add-btn:hover { background: #1e6091; }
+  .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; background: #25D366; color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 200; }
+  .cart-link { background: #f39c12; padding: 5px 10px; border-radius: 5px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>[YOUR BUSINESS NAME]</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="products.html">Products</a>
+    <a href="preorder.html">Preorder</a>
+    <a href="cart.html" class="cart-link">Cart (<span id="cartCount">0</span>)</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section class="section">
+  <h2>All Products</h2>
+  <div class="products" id="productList"></div>
+</section>
+
+<a href="https://wa.me/234XXXXXXXXXX" class="whatsapp-btn" target="_blank">💬</a>
+
+<script>
+  const products = [
+    { id: 1, name: "Product One", price: 25.00, img: "https://via.placeholder.com/200x140?text=Product+1" },
+    { id: 2, name: "Product Two", price: 40.00, img: "https://via.placeholder.com/200x140?text=Product+2" },
+    { id: 3, name: "Product Three", price: 15.00, img: "https://via.placeholder.com/200x140?text=Product+3" },
+    { id: 4, name: "Product Four", price: 60.00, img: "https://via.placeholder.com/200x140?text=Product+4" }
+  ];
+
+  const list = document.getElementById("productList");
+  products.forEach(p => {
+    list.innerHTML += `
+      <div class="product-card">
+        <img src="${p.img}" alt="${p.name}">
+        <div class="info">
+          <h4>${p.name}</h4>
+          <p class="price">$${p.price.toFixed(2)}</p>
+          <button class="add-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+        </div>
+      </div>`;
+  });
+
+  function getCart() {
+    return JSON.parse(localStorage.getItem("cart") || "[]");
+  }
+  function saveCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+  }
+  function addToCart(id) {
+    const cart = getCart();
+    const item = cart.find(x => x.id === id);
+    if (item) { item.qty += 1; }
+    else {
+      const p = products.find(x => x.id === id);
+      cart.push({ id: p.id, name: p.name, price: p.price, qty: 1 });
+    }
+    saveCart(cart);
+    alert("Added to cart!");
+  }
+  function updateCartCount() {
+    const cart = getCart();
+    const count = cart.reduce((s, i) => s + i.qty, 0);
+    document.getElementById("cartCount").textContent = count;
+  }
+  updateCartCount();
+</script>
+
+</body>
+</html>
